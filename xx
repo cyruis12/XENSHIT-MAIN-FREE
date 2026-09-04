@@ -1,30 +1,27 @@
---// WIDGET UI LIBRARY - "NebulaUI"
---// Works perfectly with smooth animations
+--// FLOATING WIDGET UI - "AetherUI"
+--// Modern, Clean, Floating Design
 
-local NebulaUI = {}
-NebulaUI.__index = NebulaUI
+local AetherUI = {}
+AetherUI.__index = AetherUI
 
 -- Services
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local HttpService = game:GetService("HttpService")
 
--- Theme Colors
+-- Colors (Modern Dark Theme)
 local Theme = {
-    Background = Color3.fromRGB(18, 18, 22),
-    Card = Color3.fromRGB(24, 24, 30),
-    CardHover = Color3.fromRGB(32, 32, 40),
+    Background = Color3.fromRGB(13, 13, 17),
+    Card = Color3.fromRGB(23, 23, 30),
+    CardHover = Color3.fromRGB(30, 30, 40),
     Accent = Color3.fromRGB(99, 102, 241),
-    AccentHover = Color3.fromRGB(129, 140, 248),
+    AccentHover = Color3.fromRGB(139, 92, 246),
     Text = Color3.fromRGB(255, 255, 255),
-    TextSecondary = Color3.fromRGB(148, 163, 184),
+    SubText = Color3.fromRGB(148, 163, 184),
     Border = Color3.fromRGB(38, 38, 48),
-    Success = Color3.fromRGB(34, 197, 94),
-    Danger = Color3.fromRGB(239, 68, 68)
+    Success = Color3.fromRGB(34, 197, 94)
 }
 
 -- Helper Functions
@@ -38,140 +35,117 @@ end
 
 local function Corner(obj, radius)
     local c = Create("UICorner")
-    c.CornerRadius = UDim.new(0, radius or 8)
+    c.CornerRadius = UDim.new(0, radius or 10)
     c.Parent = obj
     return c
 end
 
-local function Stroke(obj, thickness, color)
-    local s = Create("UIStroke")
-    s.Thickness = thickness or 1
-    s.Color = color or Theme.Border
-    s.Transparency = 0
-    s.Parent = obj
-    return s
-end
-
 local function Tween(obj, props, dur)
-    local tween = TweenService:Create(obj, 
-        TweenInfo.new(dur or 0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), 
-        props
-    )
-    tween:Play()
-    return tween
+    local t = TweenService:Create(obj, TweenInfo.new(dur or 0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), props)
+    t:Play()
+    return t
 end
 
--- Main Window Creator
-function NebulaUI:CreateWindow(config)
+-- Main Window
+function AetherUI:CreateWindow(config)
     config = config or {}
     
     local Window = {}
-    Window.__index = Window
     
     -- ScreenGui
-    local ScreenGui = Create("ScreenGui")
-    ScreenGui.Name = config.Title or "NebulaUI"
-    ScreenGui.Parent = CoreGui
-    ScreenGui.ResetOnSpawn = false
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    local Gui = Create("ScreenGui")
+    Gui.Name = config.Title or "AetherUI"
+    Gui.Parent = CoreGui
+    Gui.ResetOnSpawn = false
+    Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     
-    -- Main Frame
-    local MainFrame = Create("Frame")
-    MainFrame.Size = UDim2.new(0, 600, 0, 400)
-    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
-    MainFrame.BackgroundColor3 = Theme.Background
-    MainFrame.BorderSizePixel = 0
-    MainFrame.Parent = ScreenGui
-    MainFrame.Active = true
-    MainFrame.Draggable = true
-    Corner(MainFrame, 12)
-    Stroke(MainFrame, 1.5, Theme.Border)
+    -- Main Container
+    local Main = Create("Frame")
+    Main.Size = UDim2.new(0, 550, 0, 400)
+    Main.Position = UDim2.new(0.5, -275, 0.5, -200)
+    Main.BackgroundColor3 = Theme.Background
+    Main.BorderSizePixel = 0
+    Main.Parent = Gui
+    Main.Active = true
+    Main.Draggable = true
+    Main.ClipsDescendants = true
+    Corner(Main, 12)
     
-    -- Title Bar
-    local TitleBar = Create("Frame")
-    TitleBar.Size = UDim2.new(1, 0, 0, 45)
-    TitleBar.BackgroundColor3 = Theme.Card
-    TitleBar.BorderSizePixel = 0
-    TitleBar.Parent = MainFrame
-    Corner(TitleBar, 12)
+    -- Top Bar
+    local TopBar = Create("Frame")
+    TopBar.Size = UDim2.new(1, 0, 0, 50)
+    TopBar.BackgroundColor3 = Theme.Card
+    TopBar.BorderSizePixel = 0
+    TopBar.Parent = Main
+    Corner(TopBar, 12)
     
     -- Title
-    local TitleLabel = Create("TextLabel")
-    TitleLabel.Size = UDim2.new(0, 300, 1, 0)
-    TitleLabel.Position = UDim2.new(0, 15, 0, 0)
-    TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = config.Title or "NebulaUI"
-    TitleLabel.TextColor3 = Theme.Text
-    TitleLabel.Font = Enum.Font.GothamBold
-    TitleLabel.TextSize = 18
-    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    TitleLabel.Parent = TitleBar
+    local Title = Create("TextLabel")
+    Title.Size = UDim2.new(1, -120, 1, 0)
+    Title.Position = UDim2.new(0, 20, 0, 0)
+    Title.BackgroundTransparency = 1
+    Title.Text = config.Title or "Aether Hub"
+    Title.TextColor3 = Theme.Text
+    Title.Font = Enum.Font.GothamBold
+    Title.TextSize = 20
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+    Title.Parent = TopBar
     
-    -- Minimize Button
-    local MinimizeBtn = Create("TextButton")
-    MinimizeBtn.Size = UDim2.new(0, 30, 0, 30)
-    MinimizeBtn.Position = UDim2.new(1, -70, 0.5, -15)
-    MinimizeBtn.BackgroundColor3 = Theme.CardHover
-    MinimizeBtn.Text = "—"
-    MinimizeBtn.TextColor3 = Theme.Text
-    MinimizeBtn.Font = Enum.Font.GothamBold
-    MinimizeBtn.TextSize = 18
-    MinimizeBtn.Parent = TitleBar
-    Corner(MinimizeBtn, 6)
-    
-    local Minimized = false
-    MinimizeBtn.MouseButton1Click:Connect(function()
-        Minimized = not Minimized
-        if Minimized then
-            Tween(MainFrame, {Size = UDim2.new(0, 600, 0, 45)}, 0.3)
-        else
-            Tween(MainFrame, {Size = UDim2.new(0, 600, 0, 400)}, 0.3)
-        end
-    end)
+    -- Subtitle
+    local Subtitle = Create("TextLabel")
+    Subtitle.Size = UDim2.new(1, -120, 0, 15)
+    Subtitle.Position = UDim2.new(0, 20, 0, 30)
+    Subtitle.BackgroundTransparency = 1
+    Subtitle.Text = "Welcome, " .. LocalPlayer.Name
+    Subtitle.TextColor3 = Theme.SubText
+    Subtitle.Font = Enum.Font.GothamMedium
+    Subtitle.TextSize = 11
+    Subtitle.TextXAlignment = Enum.TextXAlignment.Left
+    Subtitle.Parent = TopBar
     
     -- Close Button
     local CloseBtn = Create("TextButton")
-    CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-    CloseBtn.Position = UDim2.new(1, -35, 0.5, -15)
-    CloseBtn.BackgroundColor3 = Theme.Danger
+    CloseBtn.Size = UDim2.new(0, 32, 0, 32)
+    CloseBtn.Position = UDim2.new(1, -42, 0, 9)
+    CloseBtn.BackgroundColor3 = Color3.fromRGB(239, 68, 68)
     CloseBtn.Text = "×"
     CloseBtn.TextColor3 = Theme.Text
     CloseBtn.Font = Enum.Font.GothamBold
-    CloseBtn.TextSize = 20
-    CloseBtn.Parent = TitleBar
-    Corner(CloseBtn, 6)
+    CloseBtn.TextSize = 22
+    CloseBtn.Parent = TopBar
+    Corner(CloseBtn, 8)
     
     CloseBtn.MouseButton1Click:Connect(function()
-        Tween(MainFrame, {Size = UDim2.new(0, 0, 0, 0)}, 0.3)
+        Tween(Main, {Size = UDim2.new(0, 0, 0, 0)}, 0.3)
         task.wait(0.3)
-        ScreenGui:Destroy()
+        Gui:Destroy()
     end)
     
-    -- Navigation Tabs
-    local TabBar = Create("Frame")
-    TabBar.Size = UDim2.new(1, 0, 0, 40)
-    TabBar.Position = UDim2.new(0, 0, 0, 45)
-    TabBar.BackgroundColor3 = Theme.Background
-    TabBar.BorderSizePixel = 0
-    TabBar.Parent = MainFrame
+    -- Tab Navigation (Left Sidebar)
+    local Sidebar = Create("Frame")
+    Sidebar.Size = UDim2.new(0, 140, 1, -50)
+    Sidebar.Position = UDim2.new(0, 0, 0, 50)
+    Sidebar.BackgroundColor3 = Theme.Background
+    Sidebar.BorderSizePixel = 0
+    Sidebar.Parent = Main
     
     local TabList = Create("UIListLayout")
-    TabList.FillDirection = Enum.FillDirection.Horizontal
-    TabList.Padding = UDim.new(0, 5)
-    TabList.Parent = TabBar
+    TabList.Padding = UDim.new(0, 8)
+    TabList.Parent = Sidebar
     
     local TabPadding = Create("UIPadding")
     TabPadding.PaddingLeft = UDim.new(0, 10)
-    TabPadding.PaddingTop = UDim.new(0, 5)
-    TabPadding.Parent = TabBar
+    TabPadding.PaddingTop = UDim.new(0, 10)
+    TabPadding.PaddingRight = UDim.new(0, 10)
+    TabPadding.Parent = Sidebar
     
     -- Content Area
-    local ContentArea = Create("Frame")
-    ContentArea.Size = UDim2.new(1, -20, 1, -95)
-    ContentArea.Position = UDim2.new(0, 10, 0, 95)
-    ContentArea.BackgroundColor3 = Theme.Background
-    ContentArea.BorderSizePixel = 0
-    ContentArea.Parent = MainFrame
+    local Content = Create("Frame")
+    Content.Size = UDim2.new(1, -140, 1, -50)
+    Content.Position = UDim2.new(0, 140, 0, 50)
+    Content.BackgroundColor3 = Theme.Background
+    Content.BorderSizePixel = 0
+    Content.Parent = Main
     
     -- Storage
     local Tabs = {}
@@ -185,24 +159,31 @@ function NebulaUI:CreateWindow(config)
         
         -- Tab Button
         local TabBtn = Create("TextButton")
-        TabBtn.Size = UDim2.new(0, 100, 0, 30)
+        TabBtn.Size = UDim2.new(1, 0, 0, 36)
         TabBtn.BackgroundColor3 = Theme.Card
         TabBtn.Text = config.Title or "Tab"
-        TabBtn.TextColor3 = Theme.TextSecondary
+        TabBtn.TextColor3 = Theme.SubText
         TabBtn.Font = Enum.Font.GothamMedium
         TabBtn.TextSize = 14
-        TabBtn.Parent = TabBar
+        TabBtn.TextXAlignment = Enum.TextXAlignment.Left
+        TabBtn.Parent = Sidebar
         Corner(TabBtn, 6)
+        
+        -- Add padding to text
+        local TabPadding = Create("UIPadding")
+        TabPadding.PaddingLeft = UDim.new(0, 12)
+        TabPadding.Parent = TabBtn
         
         -- Tab Content
         local TabContent = Create("ScrollingFrame")
-        TabContent.Size = UDim2.new(1, 0, 1, 0)
+        TabContent.Size = UDim2.new(1, -20, 1, -20)
+        TabContent.Position = UDim2.new(0, 10, 0, 10)
         TabContent.BackgroundTransparency = 1
-        TabContent.ScrollBarThickness = 4
+        TabContent.ScrollBarThickness = 3
         TabContent.ScrollBarImageColor3 = Theme.Accent
         TabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
         TabContent.Visible = false
-        TabContent.Parent = ContentArea
+        TabContent.Parent = Content
         
         local ContentList = Create("UIListLayout")
         ContentList.Padding = UDim.new(0, 10)
@@ -211,10 +192,10 @@ function NebulaUI:CreateWindow(config)
         -- Tab Click
         TabBtn.MouseButton1Click:Connect(function()
             for _, btn in pairs(TabButtons) do
-                Tween(btn, {BackgroundColor3 = Theme.Card, TextColor3 = Theme.TextSecondary}, 0.2)
+                Tween(btn, {BackgroundColor3 = Theme.Card, TextColor3 = Theme.SubText}, 0.2)
             end
-            for _, content in pairs(Tabs) do
-                content.Visible = false
+            for _, tab in pairs(Tabs) do
+                tab.Visible = false
             end
             
             Tween(TabBtn, {BackgroundColor3 = Theme.Accent, TextColor3 = Theme.Text}, 0.2)
@@ -224,7 +205,7 @@ function NebulaUI:CreateWindow(config)
         table.insert(TabButtons, TabBtn)
         table.insert(Tabs, TabContent)
         
-        -- Select first tab
+        -- Auto select first tab
         if #TabButtons == 1 then
             TabBtn.BackgroundColor3 = Theme.Accent
             TabBtn.TextColor3 = Theme.Text
@@ -237,65 +218,63 @@ function NebulaUI:CreateWindow(config)
             
             local Section = {}
             
-            -- Section Container
+            -- Section Frame
             local SectionFrame = Create("Frame")
             SectionFrame.Size = UDim2.new(1, 0, 0, 50)
             SectionFrame.BackgroundColor3 = Theme.Card
             SectionFrame.Parent = TabContent
             Corner(SectionFrame, 8)
-            Stroke(SectionFrame, 1, Theme.Border)
             
             -- Section Title
             local SectionTitle = Create("TextLabel")
-            SectionTitle.Size = UDim2.new(1, -20, 0, 30)
+            SectionTitle.Size = UDim2.new(1, -20, 0, 25)
             SectionTitle.Position = UDim2.new(0, 10, 0, 5)
             SectionTitle.BackgroundTransparency = 1
             SectionTitle.Text = config.Title or "Section"
             SectionTitle.TextColor3 = Theme.Text
             SectionTitle.Font = Enum.Font.GothamBold
-            SectionTitle.TextSize = 16
+            SectionTitle.TextSize = 15
             SectionTitle.TextXAlignment = Enum.TextXAlignment.Left
             SectionTitle.Parent = SectionFrame
             
             -- Elements Container
-            local ElementsFrame = Create("Frame")
-            ElementsFrame.Size = UDim2.new(1, 0, 0, 0)
-            ElementsFrame.Position = UDim2.new(0, 0, 0, 40)
-            ElementsFrame.BackgroundTransparency = 1
-            ElementsFrame.Parent = SectionFrame
+            local Elements = Create("Frame")
+            Elements.Size = UDim2.new(1, 0, 0, 0)
+            Elements.Position = UDim2.new(0, 0, 0, 35)
+            Elements.BackgroundTransparency = 1
+            Elements.Parent = SectionFrame
             
             local ElementsList = Create("UIListLayout")
-            ElementsList.Padding = UDim.new(0, 8)
-            ElementsList.Parent = ElementsFrame
+            ElementsList.Padding = UDim.new(0, 6)
+            ElementsList.Parent = Elements
             
             local ElementsPadding = Create("UIPadding")
             ElementsPadding.PaddingLeft = UDim.new(0, 10)
             ElementsPadding.PaddingRight = UDim.new(0, 10)
             ElementsPadding.PaddingBottom = UDim.new(0, 10)
-            ElementsPadding.Parent = ElementsFrame
+            ElementsPadding.Parent = Elements
             
             -- Update Section Size
-            local function UpdateSection()
-                local height = 45 + ElementsList.AbsoluteContentSize.Y + 10
+            local function UpdateSize()
+                local height = 40 + ElementsList.AbsoluteContentSize.Y + 10
                 SectionFrame.Size = UDim2.new(1, 0, 0, height)
                 TabContent.CanvasSize = UDim2.new(0, 0, 0, ContentList.AbsoluteContentSize.Y + 20)
             end
             
-            ElementsList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateSection)
-            ContentList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateSection)
+            ElementsList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateSize)
+            ContentList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateSize)
             
             -- Button
             function Section:Button(config)
                 local Btn = Create("TextButton")
-                Btn.Size = UDim2.new(1, 0, 0, 35)
+                Btn.Size = UDim2.new(1, 0, 0, 34)
                 Btn.BackgroundColor3 = Theme.Background
                 Btn.Text = config.Name or config.Title or "Button"
                 Btn.TextColor3 = Theme.Text
                 Btn.Font = Enum.Font.GothamMedium
-                Btn.TextSize = 14
-                Btn.Parent = ElementsFrame
-                Corner(Btn, 6)
-                Stroke(Btn, 1, Theme.Border)
+                Btn.TextSize = 13
+                Btn.Parent = Elements
+                Corner(Btn, 5)
                 
                 Btn.MouseEnter:Connect(function()
                     Tween(Btn, {BackgroundColor3 = Theme.CardHover}, 0.2)
@@ -313,11 +292,10 @@ function NebulaUI:CreateWindow(config)
             -- Toggle
             function Section:Toggle(config)
                 local ToggleFrame = Create("Frame")
-                ToggleFrame.Size = UDim2.new(1, 0, 0, 40)
+                ToggleFrame.Size = UDim2.new(1, 0, 0, 38)
                 ToggleFrame.BackgroundColor3 = Theme.Background
-                ToggleFrame.Parent = ElementsFrame
-                Corner(ToggleFrame, 6)
-                Stroke(ToggleFrame, 1, Theme.Border)
+                ToggleFrame.Parent = Elements
+                Corner(ToggleFrame, 5)
                 
                 local Label = Create("TextLabel")
                 Label.Size = UDim2.new(0.7, 0, 1, 0)
@@ -326,13 +304,13 @@ function NebulaUI:CreateWindow(config)
                 Label.Text = config.Name or config.Title or "Toggle"
                 Label.TextColor3 = Theme.Text
                 Label.Font = Enum.Font.GothamMedium
-                Label.TextSize = 14
+                Label.TextSize = 13
                 Label.TextXAlignment = Enum.TextXAlignment.Left
                 Label.Parent = ToggleFrame
                 
                 local ToggleBtn = Create("Frame")
-                ToggleBtn.Size = UDim2.new(0, 45, 0, 22)
-                ToggleBtn.Position = UDim2.new(1, -55, 0.5, -11)
+                ToggleBtn.Size = UDim2.new(0, 42, 0, 22)
+                ToggleBtn.Position = UDim2.new(1, -52, 0.5, -11)
                 ToggleBtn.BackgroundColor3 = Theme.Border
                 ToggleBtn.Parent = ToggleFrame
                 Corner(ToggleBtn, 11)
@@ -340,68 +318,67 @@ function NebulaUI:CreateWindow(config)
                 local Dot = Create("Frame")
                 Dot.Size = UDim2.new(0, 18, 0, 18)
                 Dot.Position = UDim2.new(0, 2, 0.5, -9)
-                Dot.BackgroundColor3 = Theme.TextSecondary
+                Dot.BackgroundColor3 = Theme.SubText
                 Dot.Parent = ToggleBtn
                 Corner(Dot, 9)
                 
                 local State = config.Default or false
                 
-                local function UpdateToggle()
+                local function Update()
                     if State then
                         Tween(ToggleBtn, {BackgroundColor3 = Theme.Accent}, 0.2)
                         Tween(Dot, {Position = UDim2.new(1, -20, 0.5, -9), BackgroundColor3 = Theme.Text}, 0.2)
                     else
                         Tween(ToggleBtn, {BackgroundColor3 = Theme.Border}, 0.2)
-                        Tween(Dot, {Position = UDim2.new(0, 2, 0.5, -9), BackgroundColor3 = Theme.TextSecondary}, 0.2)
+                        Tween(Dot, {Position = UDim2.new(0, 2, 0.5, -9), BackgroundColor3 = Theme.SubText}, 0.2)
                     end
                 end
                 
                 ToggleFrame.InputBegan:Connect(function(input)
                     if input.UserInputType == Enum.UserInputType.MouseButton1 then
                         State = not State
-                        UpdateToggle()
+                        Update()
                         if config.Callback then config.Callback(State) end
                     end
                 end)
                 
-                UpdateToggle()
+                Update()
                 return ToggleFrame
             end
             
             -- Slider
             function Section:Slider(config)
                 local SliderFrame = Create("Frame")
-                SliderFrame.Size = UDim2.new(1, 0, 0, 55)
+                SliderFrame.Size = UDim2.new(1, 0, 0, 50)
                 SliderFrame.BackgroundColor3 = Theme.Background
-                SliderFrame.Parent = ElementsFrame
-                Corner(SliderFrame, 6)
-                Stroke(SliderFrame, 1, Theme.Border)
+                SliderFrame.Parent = Elements
+                Corner(SliderFrame, 5)
                 
                 local Label = Create("TextLabel")
-                Label.Size = UDim2.new(0.7, 0, 0, 20)
+                Label.Size = UDim2.new(0.7, 0, 0, 18)
                 Label.Position = UDim2.new(0, 10, 0, 5)
                 Label.BackgroundTransparency = 1
                 Label.Text = config.Name or config.Title or "Slider"
                 Label.TextColor3 = Theme.Text
                 Label.Font = Enum.Font.GothamMedium
-                Label.TextSize = 14
+                Label.TextSize = 13
                 Label.TextXAlignment = Enum.TextXAlignment.Left
                 Label.Parent = SliderFrame
                 
                 local ValueLabel = Create("TextLabel")
-                ValueLabel.Size = UDim2.new(0.3, -20, 0, 20)
+                ValueLabel.Size = UDim2.new(0.3, -20, 0, 18)
                 ValueLabel.Position = UDim2.new(0.7, 10, 0, 5)
                 ValueLabel.BackgroundTransparency = 1
                 ValueLabel.Text = tostring(config.Default or 0)
                 ValueLabel.TextColor3 = Theme.Accent
                 ValueLabel.Font = Enum.Font.GothamBold
-                ValueLabel.TextSize = 14
+                ValueLabel.TextSize = 13
                 ValueLabel.TextXAlignment = Enum.TextXAlignment.Right
                 ValueLabel.Parent = SliderFrame
                 
                 local Bar = Create("Frame")
-                Bar.Size = UDim2.new(1, -20, 0, 4)
-                Bar.Position = UDim2.new(0, 10, 0, 35)
+                Bar.Size = UDim2.new(1, -20, 0, 3)
+                Bar.Position = UDim2.new(0, 10, 0, 30)
                 Bar.BackgroundColor3 = Theme.Border
                 Bar.Parent = SliderFrame
                 Corner(Bar, 2)
@@ -455,12 +432,11 @@ function NebulaUI:CreateWindow(config)
             
             -- Dropdown
             function Section:Dropdown(config)
-                local DropdownFrame = Create("Frame")
-                DropdownFrame.Size = UDim2.new(1, 0, 0, 40)
-                DropdownFrame.BackgroundColor3 = Theme.Background
-                DropdownFrame.Parent = ElementsFrame
-                Corner(DropdownFrame, 6)
-                Stroke(DropdownFrame, 1, Theme.Border)
+                local DropFrame = Create("Frame")
+                DropFrame.Size = UDim2.new(1, 0, 0, 38)
+                DropFrame.BackgroundColor3 = Theme.Background
+                DropFrame.Parent = Elements
+                Corner(DropFrame, 5)
                 
                 local Label = Create("TextLabel")
                 Label.Size = UDim2.new(0.6, 0, 1, 0)
@@ -469,29 +445,29 @@ function NebulaUI:CreateWindow(config)
                 Label.Text = config.Name or config.Title or "Dropdown"
                 Label.TextColor3 = Theme.Text
                 Label.Font = Enum.Font.GothamMedium
-                Label.TextSize = 14
+                Label.TextSize = 13
                 Label.TextXAlignment = Enum.TextXAlignment.Left
-                Label.Parent = DropdownFrame
+                Label.Parent = DropFrame
                 
                 local DropBtn = Create("TextButton")
-                DropBtn.Size = UDim2.new(0.4, -20, 0, 30)
-                DropBtn.Position = UDim2.new(0.6, 10, 0.5, -15)
+                DropBtn.Size = UDim2.new(0.4, -20, 0, 28)
+                DropBtn.Position = UDim2.new(0.6, 10, 0.5, -14)
                 DropBtn.BackgroundColor3 = Theme.CardHover
                 DropBtn.Text = config.Default or "Select"
                 DropBtn.TextColor3 = Theme.Text
                 DropBtn.Font = Enum.Font.GothamMedium
                 DropBtn.TextSize = 12
-                DropBtn.Parent = DropdownFrame
+                DropBtn.Parent = DropFrame
                 Corner(DropBtn, 4)
                 
                 local DropList = Create("ScrollingFrame")
                 DropList.Size = UDim2.new(0.4, -20, 0, 0)
-                DropList.Position = UDim2.new(0.6, 10, 0, 35)
+                DropList.Position = UDim2.new(0.6, 10, 0, 32)
                 DropList.BackgroundColor3 = Theme.CardHover
                 DropList.Visible = false
                 DropList.ScrollBarThickness = 2
                 DropList.ZIndex = 10
-                DropList.Parent = DropdownFrame
+                DropList.Parent = DropFrame
                 Corner(DropList, 4)
                 
                 local ListLayout = Create("UIListLayout")
@@ -501,25 +477,25 @@ function NebulaUI:CreateWindow(config)
                 DropBtn.MouseButton1Click:Connect(function()
                     DropList.Visible = not DropList.Visible
                     if DropList.Visible then
-                        DropList.Size = UDim2.new(0.4, -20, 0, math.min(#(config.Options or {}), 5) * 30)
+                        DropList.Size = UDim2.new(0.4, -20, 0, math.min(#(config.Options or {}), 5) * 28)
                     else
                         DropList.Size = UDim2.new(0.4, -20, 0, 0)
                     end
                 end)
                 
                 for _, option in pairs(config.Options or {}) do
-                    local OptionBtn = Create("TextButton")
-                    OptionBtn.Size = UDim2.new(1, -4, 0, 28)
-                    OptionBtn.Position = UDim2.new(0, 2, 0, 0)
-                    OptionBtn.BackgroundColor3 = Theme.Background
-                    OptionBtn.Text = option
-                    OptionBtn.TextColor3 = Theme.Text
-                    OptionBtn.Font = Enum.Font.GothamMedium
-                    OptionBtn.TextSize = 12
-                    OptionBtn.Parent = DropList
-                    Corner(OptionBtn, 4)
+                    local OptBtn = Create("TextButton")
+                    OptBtn.Size = UDim2.new(1, -4, 0, 26)
+                    OptBtn.Position = UDim2.new(0, 2, 0, 0)
+                    OptBtn.BackgroundColor3 = Theme.Background
+                    OptBtn.Text = option
+                    OptBtn.TextColor3 = Theme.Text
+                    OptBtn.Font = Enum.Font.GothamMedium
+                    OptBtn.TextSize = 11
+                    OptBtn.Parent = DropList
+                    Corner(OptBtn, 4)
                     
-                    OptionBtn.MouseButton1Click:Connect(function()
+                    OptBtn.MouseButton1Click:Connect(function()
                         DropBtn.Text = option
                         DropList.Visible = false
                         DropList.Size = UDim2.new(0.4, -20, 0, 0)
@@ -527,40 +503,7 @@ function NebulaUI:CreateWindow(config)
                     end)
                 end
                 
-                return DropdownFrame
-            end
-            
-            -- Text Input
-            function Section:TextBox(config)
-                local InputFrame = Create("Frame")
-                InputFrame.Size = UDim2.new(1, 0, 0, 40)
-                InputFrame.BackgroundColor3 = Theme.Background
-                InputFrame.Parent = ElementsFrame
-                Corner(InputFrame, 6)
-                Stroke(InputFrame, 1, Theme.Border)
-                
-                local Input = Create("TextBox")
-                Input.Size = UDim2.new(1, -20, 0, 30)
-                Input.Position = UDim2.new(0, 10, 0.5, -15)
-                Input.BackgroundColor3 = Theme.CardHover
-                Input.PlaceholderText = config.Placeholder or "Enter text..."
-                Input.Text = ""
-                Input.TextColor3 = Theme.Text
-                Input.PlaceholderColor3 = Theme.TextSecondary
-                Input.Font = Enum.Font.GothamMedium
-                Input.TextSize = 13
-                Input.Parent = InputFrame
-                Corner(Input, 4)
-                
-                if config.Callback then
-                    Input.FocusLost:Connect(function(enterPressed)
-                        if enterPressed then
-                            config.Callback(Input.Text)
-                        end
-                    end)
-                end
-                
-                return Input
+                return DropFrame
             end
             
             return Section
@@ -572,12 +515,11 @@ function NebulaUI:CreateWindow(config)
     -- Notification
     function Window:Notify(config)
         local Notif = Create("Frame")
-        Notif.Size = UDim2.new(0, 250, 0, 50)
-        Notif.Position = UDim2.new(1, -260, 1, -60)
+        Notif.Size = UDim2.new(0, 240, 0, 50)
+        Notif.Position = UDim2.new(1, -250, 1, -60)
         Notif.BackgroundColor3 = Theme.Card
-        Notif.Parent = ScreenGui
+        Notif.Parent = Gui
         Corner(Notif, 8)
-        Stroke(Notif, 1, Theme.Accent)
         
         local Title = Create("TextLabel")
         Title.Size = UDim2.new(1, -20, 0, 20)
@@ -595,14 +537,14 @@ function NebulaUI:CreateWindow(config)
         Content.Position = UDim2.new(0, 10, 0, 25)
         Content.BackgroundTransparency = 1
         Content.Text = config.Content or ""
-        Content.TextColor3 = Theme.TextSecondary
+        Content.TextColor3 = Theme.SubText
         Content.Font = Enum.Font.GothamMedium
         Content.TextSize = 12
         Content.TextXAlignment = Enum.TextXAlignment.Left
         Content.Parent = Notif
         
         Notif.Position = UDim2.new(1, 10, 1, -60)
-        Tween(Notif, {Position = UDim2.new(1, -260, 1, -60)}, 0.3)
+        Tween(Notif, {Position = UDim2.new(1, -250, 1, -60)}, 0.3)
         
         task.wait(config.Duration or 3)
         Tween(Notif, {Position = UDim2.new(1, 10, 1, -60), BackgroundTransparency = 1}, 0.3)
@@ -613,4 +555,4 @@ function NebulaUI:CreateWindow(config)
     return Window
 end
 
-return NebulaUI
+return AetherUI

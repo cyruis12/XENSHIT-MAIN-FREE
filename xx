@@ -1,3 +1,6 @@
+--// XENSHIT UI LIBRARY - Glassmorphism Edition
+--// Smooth, Modern, Premium Design
+
 --// SERVICES
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -8,21 +11,46 @@ local HttpService = game:GetService("HttpService")
 
 local LocalPlayer = Players.LocalPlayer
 
---// COLORS
+--// COLORS - Glassmorphism Theme
 local Colors = {
-    Background = Color3.fromRGB(17, 19, 20),
-    Card = Color3.fromRGB(22, 24, 25),
-    Card2 = Color3.fromRGB(28, 30, 31),
-    Card3 = Color3.fromRGB(33, 35, 36),
-    Border = Color3.fromRGB(45, 48, 50),
-    Text = Color3.fromRGB(240, 240, 240),
-    SubText = Color3.fromRGB(150, 155, 160),
-    Green = Color3.fromRGB(120, 220, 120),
-    GreenDark = Color3.fromRGB(80, 180, 80),
-    Red = Color3.fromRGB(220, 80, 80),
-    RedDark = Color3.fromRGB(180, 50, 50),
-    Blue = Color3.fromRGB(80, 140, 220),
-    NavBg = Color3.fromRGB(20, 22, 23)
+    -- Background
+    Background = Color3.fromRGB(10, 12, 16),
+    BackgroundGradient1 = Color3.fromRGB(30, 50, 70),
+    BackgroundGradient2 = Color3.fromRGB(15, 18, 22),
+    
+    -- Glass Cards
+    Glass = Color3.fromRGB(255, 255, 255),
+    GlassTransparency = 0.92,
+    Card = Color3.fromRGB(25, 28, 32),
+    Card2 = Color3.fromRGB(32, 35, 40),
+    Card3 = Color3.fromRGB(40, 44, 50),
+    
+    -- Borders
+    Border = Color3.fromRGB(255, 255, 255),
+    BorderTransparency = 0.85,
+    
+    -- Text
+    Text = Color3.fromRGB(255, 255, 255),
+    SubText = Color3.fromRGB(170, 175, 185),
+    TextShadow = Color3.fromRGB(0, 0, 0),
+    
+    -- Accents
+    Green = Color3.fromRGB(100, 220, 120),
+    GreenDark = Color3.fromRGB(70, 180, 90),
+    GreenGlow = Color3.fromRGB(100, 220, 120),
+    Red = Color3.fromRGB(230, 80, 80),
+    RedDark = Color3.fromRGB(190, 50, 50),
+    Blue = Color3.fromRGB(100, 150, 255),
+    BlueDark = Color3.fromRGB(70, 110, 200),
+    Purple = Color3.fromRGB(150, 100, 255),
+    
+    -- Navigation
+    NavBg = Color3.fromRGB(255, 255, 255),
+    NavTransparency = 0.9,
+    
+    -- Accent for selected
+    Accent = Color3.fromRGB(120, 140, 255),
+    AccentTransparency = 0.3
 }
 
 --// HELPER FUNCTIONS
@@ -36,23 +64,52 @@ end
 
 local function Corner(instance, radius)
     local corner = Create("UICorner")
-    corner.CornerRadius = UDim.new(0, radius or 8)
+    corner.CornerRadius = UDim.new(0, radius or 12)
     corner.Parent = instance
     return corner
 end
 
-local function Stroke(instance, thickness, color, transparency)
+local function GlassStroke(instance, thickness, transparency)
     local stroke = Create("UIStroke")
     stroke.Thickness = thickness or 1
-    stroke.Color = color or Colors.Border
-    stroke.Transparency = transparency or 0
+    stroke.Color = Colors.Border
+    stroke.Transparency = transparency or Colors.BorderTransparency
     stroke.Parent = instance
     return stroke
 end
 
+local function GlassGradient(instance)
+    local gradient = Create("UIGradient")
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 210))
+    })
+    gradient.Transparency = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, NumberSequence.new(0.85, 0.85)),
+        ColorSequenceKeypoint.new(1, NumberSequence.new(0.95, 0.95))
+    })
+    gradient.Rotation = 45
+    gradient.Parent = instance
+    return gradient
+end
+
+local function Shadow(instance, transparency, size)
+    local shadow = Create("ImageLabel")
+    shadow.Size = UDim2.new(1, size or 30, 1, size or 30)
+    shadow.Position = UDim2.new(0, -(size or 30)/2, 0, -(size or 30)/2)
+    shadow.Image = "rbxassetid://6015897843"
+    shadow.ImageTransparency = transparency or 0.6
+    shadow.BackgroundTransparency = 1
+    shadow.ScaleType = Enum.ScaleType.Slice
+    shadow.SliceCenter = Rect.new(49, 49, 49, 49)
+    shadow.ZIndex = -1
+    shadow.Parent = instance
+    return shadow
+end
+
 local function Tween(instance, properties, duration, easing, direction)
     local tweenInfo = TweenInfo.new(
-        duration or 0.25,
+        duration or 0.3,
         easing or Enum.EasingStyle.Quart,
         direction or Enum.EasingDirection.Out
     )
@@ -61,8 +118,15 @@ local function Tween(instance, properties, duration, easing, direction)
     return tween
 end
 
-local function setAlpha(color, alpha)
-    return Color3.new(color.R, color.G, color.B)
+local function SmoothTween(instance, properties, duration)
+    local tweenInfo = TweenInfo.new(
+        duration or 0.4,
+        Enum.EasingStyle.Quint,
+        Enum.EasingDirection.Out
+    )
+    local tween = TweenService:Create(instance, tweenInfo, properties)
+    tween:Play()
+    return tween
 end
 
 --// SCRIPT DATA
@@ -80,7 +144,7 @@ local Scripts = {
         Time = "Yesterday",
         Favorite = false,
         Callback = function()
-            print("Executing: Dex explorer")
+            loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Dex-with-tags-78265"))()
         end
     },
     {
@@ -88,7 +152,7 @@ local Scripts = {
         Time = "2 days ago",
         Favorite = false,
         Callback = function()
-            print("Executing: Remote Spy")
+            loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Modified-RemoteSpy-v3-79196"))()
         end
     },
     {
@@ -96,30 +160,29 @@ local Scripts = {
         Time = "3 days ago",
         Favorite = true,
         Callback = function()
-            print("Executing: Infinite Yield")
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
         end
     }
 }
 
 --// MAIN GUI
 local ScreenGui = Create("ScreenGui")
-ScreenGui.Name = "NebulaHub"
+ScreenGui.Name = "XenshitHub"
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.IgnoreGuiInset = true
 
--- UIScale for responsiveness
+-- UIScale
 local UIScale = Create("UIScale")
 UIScale.Scale = 1
 UIScale.Parent = ScreenGui
 
--- Update scale based on screen size
 local function UpdateScale()
     local screenSize = workspace.CurrentCamera.ViewportSize
     local baseWidth = 1920
-    local scale = math.clamp(screenSize.X / baseWidth, 0.7, 1.2)
-    UIScale.Scale = scale
+    local scale = math.clamp(screenSize.X / baseWidth, 0.75, 1.1)
+    SmoothTween(UIScale, {Scale = scale}, 0.5)
 end
 
 workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(UpdateScale)
@@ -135,11 +198,11 @@ Background.Parent = ScreenGui
 -- Background gradient
 local bgGradient = Create("UIGradient")
 bgGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 45, 60)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(20, 25, 30)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 17, 18))
+    ColorSequenceKeypoint.new(0, Colors.BackgroundGradient1),
+    ColorSequenceKeypoint.new(0.4, Color3.fromRGB(20, 28, 35)),
+    ColorSequenceKeypoint.new(1, Colors.BackgroundGradient2)
 })
-bgGradient.Rotation = 180
+bgGradient.Rotation = 160
 bgGradient.Parent = Background
 
 --// MAIN CONTAINER
@@ -149,52 +212,44 @@ MainContainer.Position = UDim2.new(0, 20, 0, 20)
 MainContainer.BackgroundTransparency = 1
 MainContainer.Parent = Background
 
---// UI LAYOUT
-local UIGrid = Create("UIGridLayout")
-UIGrid.CellSize = UDim2.new(0.33, -12, 0.2, -12)
-UIGrid.CellPadding = UDim2.new(0, 12, 0, 12)
-UIGrid.SortOrder = Enum.SortOrder.LayoutOrder
-UIGrid.Parent = MainContainer
-
---// CARD CREATION FUNCTION
-local function CreateCard(parent, config)
+--// CARD CREATION - Glassmorphism Style
+local function CreateGlassCard(parent, config)
     config = config or {}
     
     local Card = Create("Frame")
     Card.Size = config.Size or UDim2.new(1, 0, 1, 0)
     Card.Position = config.Position or UDim2.new(0, 0, 0, 0)
-    Card.BackgroundColor3 = config.Color or Colors.Card
+    Card.BackgroundColor3 = Colors.Glass
+    Card.BackgroundTransparency = config.Transparency or Colors.GlassTransparency
     Card.BorderSizePixel = 0
     Card.Parent = parent
-    Corner(Card, config.Radius or 12)
-    Stroke(Card, 1, Colors.Border, 0.5)
+    Corner(Card, config.Radius or 14)
+    GlassStroke(Card, 1.5, 0.8)
+    GlassGradient(Card)
+    Shadow(Card, 0.75, 25)
     
-    -- Shadow
-    local Shadow = Create("ImageLabel")
-    Shadow.Size = UDim2.new(1, 20, 1, 20)
-    Shadow.Position = UDim2.new(0, -10, 0, -10)
-    Shadow.Image = "rbxassetid://6015897843"
-    Shadow.ImageTransparency = 0.8
-    Shadow.BackgroundTransparency = 1
-    Shadow.ScaleType = Enum.ScaleType.Slice
-    Shadow.SliceCenter = Rect.new(49, 49, 49, 49)
-    Shadow.ZIndex = -1
-    Shadow.Parent = Card
-    
-    -- Animation on load
+    -- Entrance animation
     Card.AnchorPoint = Vector2.new(0.5, 0.5)
-    Card.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Card.Size = UDim2.new(0, 0, 0, 0)
+    local finalSize = config.Size or UDim2.new(1, 0, 1, 0)
+    local finalPos = config.Position or UDim2.new(0, 0, 0, 0)
     
-    Tween(Card, {
-        Size = config.Size or UDim2.new(1, 0, 1, 0),
-        Position = config.Position or UDim2.new(0, 0, 0, 0)
-    }, 0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+    Card.Position = finalPos + UDim2.new(0, 0, 0, 30)
+    Card.Size = finalSize - UDim2.new(0, 20, 0, 20)
+    Card.BackgroundTransparency = 1
+    
+    task.spawn(function()
+        task.wait(config.Delay or 0.1)
+        SmoothTween(Card, {
+            BackgroundTransparency = config.Transparency or Colors.GlassTransparency,
+            Size = finalSize,
+            Position = finalPos
+        }, 0.6)
+    end)
     
     return Card
 end
 
---// BUTTON CREATION
+--// BUTTON CREATION - Smooth
 local function CreateButton(parent, config)
     config = config or {}
     
@@ -202,28 +257,44 @@ local function CreateButton(parent, config)
     Button.Size = config.Size or UDim2.new(0, 100, 0, 35)
     Button.Position = config.Position or UDim2.new(0, 0, 0, 0)
     Button.BackgroundColor3 = config.Color or Colors.Green
+    Button.BackgroundTransparency = config.Transparency or 0
     Button.Text = config.Text or "Button"
     Button.TextColor3 = config.TextColor or Color3.fromRGB(0, 0, 0)
     Button.Font = Enum.Font.GothamBold
     Button.TextSize = config.TextSize or 13
     Button.Parent = parent
-    Corner(Button, config.Radius or 6)
+    Corner(Button, config.Radius or 8)
     
-    -- Hover animations
+    if config.Glass then
+        GlassStroke(Button, 1, 0.7)
+        GlassGradient(Button)
+    end
+    
+    -- Smooth hover
     Button.MouseEnter:Connect(function()
-        Tween(Button, {BackgroundColor3 = config.HoverColor or Colors.GreenDark}, 0.2)
+        SmoothTween(Button, {
+            BackgroundColor3 = config.HoverColor or (config.Color and Color3.new(config.Color.R * 0.8, config.Color.G * 0.8, config.Color.B * 0.8)) or Colors.GreenDark,
+            Size = config.Size + UDim2.new(0, 2, 0, 2)
+        }, 0.25)
     end)
     
     Button.MouseLeave:Connect(function()
-        Tween(Button, {BackgroundColor3 = config.Color or Colors.Green}, 0.2)
+        SmoothTween(Button, {
+            BackgroundColor3 = config.Color or Colors.Green,
+            Size = config.Size or UDim2.new(0, 100, 0, 35)
+        }, 0.25)
     end)
     
     Button.MouseButton1Down:Connect(function()
-        Tween(Button, {Size = UDim2.new(config.Size.X.Scale, config.Size.X.Offset - 2, config.Size.Y.Scale, config.Size.Y.Offset - 2)}, 0.1)
+        SmoothTween(Button, {
+            Size = config.Size - UDim2.new(0, 4, 0, 4)
+        }, 0.1)
     end)
     
     Button.MouseButton1Up:Connect(function()
-        Tween(Button, {Size = config.Size or UDim2.new(0, 100, 0, 35)}, 0.1)
+        SmoothTween(Button, {
+            Size = config.Size or UDim2.new(0, 100, 0, 35)
+        }, 0.1)
     end)
     
     if config.Callback then
@@ -234,60 +305,59 @@ local function CreateButton(parent, config)
 end
 
 --// PROFILE CARD
-local ProfileCard = CreateCard(MainContainer, {
-    Size = UDim2.new(0.32, -12, 0.18, -12),
-    Position = UDim2.new(0, 0, 0, 0),
-    Color = Colors.Card
+local ProfileCard = CreateGlassCard(MainContainer, {
+    Size = UDim2.new(0.3, -10, 0.16, -10),
+    Position = UDim2.new(0, 5, 0, 5),
+    Delay = 0
 })
 
--- Avatar
+-- Avatar with glass border
 local Avatar = Create("ImageLabel")
-Avatar.Size = UDim2.new(0, 50, 0, 50)
-Avatar.Position = UDim2.new(0, 15, 0.5, -25)
+Avatar.Size = UDim2.new(0, 45, 0, 45)
+Avatar.Position = UDim2.new(0, 15, 0.5, -22)
 Avatar.BackgroundColor3 = Colors.Card2
 Avatar.BorderSizePixel = 0
 Avatar.Parent = ProfileCard
-Corner(Avatar, 8)
-Stroke(Avatar, 1.5, Colors.Border)
+Corner(Avatar, 10)
+GlassStroke(Avatar, 1.5, 0.5)
 
--- Load avatar
 pcall(function()
-    local userId = LocalPlayer.UserId
-    Avatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=100&height=100&format=png"
+    Avatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. LocalPlayer.UserId .. "&width=100&height=100&format=png"
 end)
 
 -- Title
 local TitleText = Create("TextLabel")
-TitleText.Size = UDim2.new(1, -80, 0, 25)
-TitleText.Position = UDim2.new(0, 75, 0, 15)
+TitleText.Size = UDim2.new(1, -80, 0, 22)
+TitleText.Position = UDim2.new(0, 70, 0, 12)
 TitleText.BackgroundTransparency = 1
 TitleText.Text = "Baseplate"
 TitleText.TextColor3 = Colors.Text
 TitleText.Font = Enum.Font.GothamBold
-TitleText.TextSize = 16
+TitleText.TextSize = 15
 TitleText.TextXAlignment = Enum.TextXAlignment.Left
 TitleText.Parent = ProfileCard
 
 -- Subtitle
 local SubtitleText = Create("TextLabel")
-SubtitleText.Size = UDim2.new(1, -80, 0, 20)
-SubtitleText.Position = UDim2.new(0, 75, 0, 40)
+SubtitleText.Size = UDim2.new(1, -80, 0, 18)
+SubtitleText.Position = UDim2.new(0, 70, 0, 35)
 SubtitleText.BackgroundTransparency = 1
 SubtitleText.Text = "@Templates"
 SubtitleText.TextColor3 = Colors.SubText
 SubtitleText.Font = Enum.Font.GothamMedium
-SubtitleText.TextSize = 12
+SubtitleText.TextSize = 11
 SubtitleText.TextXAlignment = Enum.TextXAlignment.Left
 SubtitleText.Parent = ProfileCard
 
 -- Rejoin Button
 CreateButton(ProfileCard, {
     Text = "Rejoin",
-    Size = UDim2.new(0, 70, 0, 28),
-    Position = UDim2.new(1, -160, 0.5, -14),
+    Size = UDim2.new(0, 60, 0, 25),
+    Position = UDim2.new(1, -140, 0.5, -12),
     Color = Colors.Card2,
     TextColor = Colors.Text,
     HoverColor = Colors.Card3,
+    Glass = true,
     Callback = function()
         game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId)
     end
@@ -295,182 +365,185 @@ CreateButton(ProfileCard, {
 
 -- Server Hop Button
 CreateButton(ProfileCard, {
-    Text = "Server Hop",
-    Size = UDim2.new(0, 80, 0, 28),
-    Position = UDim2.new(1, -85, 0.5, -14),
+    Text = "Hop",
+    Size = UDim2.new(0, 50, 0, 25),
+    Position = UDim2.new(1, -75, 0.5, -12),
     Color = Colors.Card2,
     TextColor = Colors.Text,
     HoverColor = Colors.Card3,
+    Glass = true,
     Callback = function()
         game:GetService("TeleportService"):Teleport(game.PlaceId)
     end
 })
 
---// LEFT LARGE CARD
-local LeftLargeCard = CreateCard(MainContainer, {
-    Size = UDim2.new(0.32, -12, 0.35, -12),
-    Position = UDim2.new(0, 0, 0.18, 0),
-    Color = Colors.Card
+--// LEFT LARGE CARD (Player Info)
+local LeftLargeCard = CreateGlassCard(MainContainer, {
+    Size = UDim2.new(0.3, -10, 0.32, -10),
+    Position = UDim2.new(0, 5, 0.17, 5),
+    Delay = 0.1
 })
 
--- Card title
 local LeftTitle = Create("TextLabel")
-LeftTitle.Size = UDim2.new(1, -30, 0, 25)
+LeftTitle.Size = UDim2.new(1, -30, 0, 20)
 LeftTitle.Position = UDim2.new(0, 15, 0, 10)
 LeftTitle.BackgroundTransparency = 1
-LeftTitle.Text = "Player Info"
+LeftTitle.Text = "PLAYER INFO"
 LeftTitle.TextColor3 = Colors.SubText
 LeftTitle.Font = Enum.Font.GothamBold
-LeftTitle.TextSize = 12
+LeftTitle.TextSize = 10
 LeftTitle.TextXAlignment = Enum.TextXAlignment.Left
 LeftTitle.Parent = LeftLargeCard
 
--- Player info content
 local PlayerInfo = Create("TextLabel")
 PlayerInfo.Size = UDim2.new(1, -30, 0, 60)
-PlayerInfo.Position = UDim2.new(0, 15, 0, 40)
+PlayerInfo.Position = UDim2.new(0, 15, 0, 35)
 PlayerInfo.BackgroundTransparency = 1
 PlayerInfo.Text = "Username: " .. LocalPlayer.Name .. "\nDisplay: " .. LocalPlayer.DisplayName .. "\nID: " .. LocalPlayer.UserId
 PlayerInfo.TextColor3 = Colors.Text
 PlayerInfo.Font = Enum.Font.GothamMedium
-PlayerInfo.TextSize = 12
+PlayerInfo.TextSize = 11
 PlayerInfo.TextXAlignment = Enum.TextXAlignment.Left
 PlayerInfo.TextWrapped = true
 PlayerInfo.Parent = LeftLargeCard
 
---// LEFT BOTTOM CARD
-local LeftBottomCard = CreateCard(MainContainer, {
-    Size = UDim2.new(0.32, -12, 0.32, -12),
-    Position = UDim2.new(0, 0, 0.53, 0),
-    Color = Colors.Card
+--// LEFT BOTTOM CARD (Server Info)
+local LeftBottomCard = CreateGlassCard(MainContainer, {
+    Size = UDim2.new(0.3, -10, 0.28, -10),
+    Position = UDim2.new(0, 5, 0.5, 5),
+    Delay = 0.2
 })
 
 local BottomTitle = Create("TextLabel")
-BottomTitle.Size = UDim2.new(1, -30, 0, 25)
+BottomTitle.Size = UDim2.new(1, -30, 0, 20)
 BottomTitle.Position = UDim2.new(0, 15, 0, 10)
 BottomTitle.BackgroundTransparency = 1
-BottomTitle.Text = "Server Info"
+BottomTitle.Text = "SERVER INFO"
 BottomTitle.TextColor3 = Colors.SubText
 BottomTitle.Font = Enum.Font.GothamBold
-BottomTitle.TextSize = 12
+BottomTitle.TextSize = 10
 BottomTitle.TextXAlignment = Enum.TextXAlignment.Left
 BottomTitle.Parent = LeftBottomCard
 
 local ServerInfo = Create("TextLabel")
 ServerInfo.Size = UDim2.new(1, -30, 0, 60)
-ServerInfo.Position = UDim2.new(0, 15, 0, 40)
+ServerInfo.Position = UDim2.new(0, 15, 0, 35)
 ServerInfo.BackgroundTransparency = 1
 ServerInfo.Text = "Game: " .. game.Name .. "\nPlace: " .. game.PlaceId .. "\nPlayers: " .. #Players:GetPlayers()
 ServerInfo.TextColor3 = Colors.Text
 ServerInfo.Font = Enum.Font.GothamMedium
-ServerInfo.TextSize = 12
+ServerInfo.TextSize = 11
 ServerInfo.TextXAlignment = Enum.TextXAlignment.Left
 ServerInfo.TextWrapped = true
 ServerInfo.Parent = LeftBottomCard
 
 --// RECENT SCRIPTS CARD
-local RecentCard = CreateCard(MainContainer, {
-    Size = UDim2.new(0.32, -12, 0.85, -12),
-    Position = UDim2.new(0.32, 0, 0, 0),
-    Color = Colors.Card
+local RecentCard = CreateGlassCard(MainContainer, {
+    Size = UDim2.new(0.36, -10, 0.78, -10),
+    Position = UDim2.new(0.31, 5, 0, 5),
+    Delay = 0.15
 })
 
 local RecentTitle = Create("TextLabel")
-RecentTitle.Size = UDim2.new(1, -30, 0, 30)
+RecentTitle.Size = UDim2.new(1, -30, 0, 25)
 RecentTitle.Position = UDim2.new(0, 15, 0, 10)
 RecentTitle.BackgroundTransparency = 1
 RecentTitle.Text = "Recent scripts"
 RecentTitle.TextColor3 = Colors.Text
 RecentTitle.Font = Enum.Font.GothamBold
-RecentTitle.TextSize = 16
+RecentTitle.TextSize = 15
 RecentTitle.TextXAlignment = Enum.TextXAlignment.Left
 RecentTitle.Parent = RecentCard
 
 -- Scripts container
 local ScriptsContainer = Create("ScrollingFrame")
-ScriptsContainer.Size = UDim2.new(1, -20, 1, -50)
-ScriptsContainer.Position = UDim2.new(0, 10, 0, 45)
+ScriptsContainer.Size = UDim2.new(1, -20, 1, -45)
+ScriptsContainer.Position = UDim2.new(0, 10, 0, 40)
 ScriptsContainer.BackgroundTransparency = 1
-ScriptsContainer.ScrollBarThickness = 3
-ScriptsContainer.ScrollBarImageColor3 = Colors.Border
+ScriptsContainer.ScrollBarThickness = 2
+ScriptsContainer.ScrollBarImageColor3 = Colors.SubText
 ScriptsContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
 ScriptsContainer.Parent = RecentCard
 
 local ScriptsList = Create("UIListLayout")
-ScriptsList.Padding = UDim.new(0, 8)
+ScriptsList.Padding = UDim.new(0, 6)
 ScriptsList.Parent = ScriptsContainer
 
--- Script row creation function
+-- Script row creation
 local function CreateScriptRow(scriptData)
     local Row = Create("Frame")
-    Row.Size = UDim2.new(1, -4, 0, 60)
+    Row.Size = UDim2.new(1, -4, 0, 55)
     Row.BackgroundColor3 = Colors.Card2
+    Row.BackgroundTransparency = 0.3
     Row.Parent = ScriptsContainer
     Corner(Row, 8)
-    Stroke(Row, 1, Colors.Border, 0.7)
+    GlassStroke(Row, 1, 0.8)
     
     -- Favorite star
     local Star = Create("TextButton")
-    Star.Size = UDim2.new(0, 25, 0, 25)
-    Star.Position = UDim2.new(0, 10, 0.5, -12)
+    Star.Size = UDim2.new(0, 22, 0, 22)
+    Star.Position = UDim2.new(0, 8, 0.5, -11)
     Star.BackgroundTransparency = 1
     Star.Text = scriptData.Favorite and "★" or "☆"
     Star.TextColor3 = scriptData.Favorite and Color3.fromRGB(255, 200, 50) or Colors.SubText
     Star.Font = Enum.Font.GothamBold
-    Star.TextSize = 18
+    Star.TextSize = 16
     Star.Parent = Row
     
     Star.MouseButton1Click:Connect(function()
         scriptData.Favorite = not scriptData.Favorite
         Star.Text = scriptData.Favorite and "★" or "☆"
-        Star.TextColor3 = scriptData.Favorite and Color3.fromRGB(255, 200, 50) or Colors.SubText
+        SmoothTween(Star, {
+            TextColor3 = scriptData.Favorite and Color3.fromRGB(255, 200, 50) or Colors.SubText
+        }, 0.2)
     end)
     
     -- Script name
     local NameLabel = Create("TextLabel")
-    NameLabel.Size = UDim2.new(0.5, 0, 0, 20)
-    NameLabel.Position = UDim2.new(0, 45, 0, 10)
+    NameLabel.Size = UDim2.new(0.5, 0, 0, 18)
+    NameLabel.Position = UDim2.new(0, 38, 0, 8)
     NameLabel.BackgroundTransparency = 1
     NameLabel.Text = scriptData.Name
     NameLabel.TextColor3 = Colors.Text
     NameLabel.Font = Enum.Font.GothamMedium
-    NameLabel.TextSize = 14
+    NameLabel.TextSize = 13
     NameLabel.TextXAlignment = Enum.TextXAlignment.Left
     NameLabel.Parent = Row
     
     -- Timestamp
     local TimeLabel = Create("TextLabel")
-    TimeLabel.Size = UDim2.new(0.4, -10, 0, 15)
-    TimeLabel.Position = UDim2.new(0, 45, 0, 35)
+    TimeLabel.Size = UDim2.new(0.4, -10, 0, 14)
+    TimeLabel.Position = UDim2.new(0, 38, 0, 32)
     TimeLabel.BackgroundTransparency = 1
     TimeLabel.Text = scriptData.Time
     TimeLabel.TextColor3 = Colors.SubText
     TimeLabel.Font = Enum.Font.GothamMedium
-    TimeLabel.TextSize = 11
+    TimeLabel.TextSize = 10
     TimeLabel.TextXAlignment = Enum.TextXAlignment.Left
     TimeLabel.Parent = Row
     
     -- Delete button
     local DeleteBtn = Create("TextButton")
-    DeleteBtn.Size = UDim2.new(0, 25, 0, 25)
-    DeleteBtn.Position = UDim2.new(1, -110, 0.5, -12)
+    DeleteBtn.Size = UDim2.new(0, 22, 0, 22)
+    DeleteBtn.Position = UDim2.new(1, -100, 0.5, -11)
     DeleteBtn.BackgroundColor3 = Colors.Red
+    DeleteBtn.BackgroundTransparency = 0.2
     DeleteBtn.Text = "🗑"
     DeleteBtn.TextColor3 = Colors.Text
     DeleteBtn.Font = Enum.Font.GothamBold
-    DeleteBtn.TextSize = 12
+    DeleteBtn.TextSize = 10
     DeleteBtn.Parent = Row
-    Corner(DeleteBtn, 12)
+    Corner(DeleteBtn, 11)
     
     DeleteBtn.MouseEnter:Connect(function()
-        Tween(DeleteBtn, {BackgroundColor3 = Colors.RedDark}, 0.2)
+        SmoothTween(DeleteBtn, {BackgroundTransparency = 0}, 0.2)
     end)
     DeleteBtn.MouseLeave:Connect(function()
-        Tween(DeleteBtn, {BackgroundColor3 = Colors.Red}, 0.2)
+        SmoothTween(DeleteBtn, {BackgroundTransparency = 0.2}, 0.2)
     end)
     
     DeleteBtn.MouseButton1Click:Connect(function()
-        Tween(Row, {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}, 0.3)
+        SmoothTween(Row, {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}, 0.3)
         task.wait(0.3)
         Row:Destroy()
         ScriptsContainer.CanvasSize = UDim2.new(0, 0, 0, ScriptsList.AbsoluteContentSize.Y + 10)
@@ -478,35 +551,35 @@ local function CreateScriptRow(scriptData)
     
     -- Execute button
     local ExecuteBtn = Create("TextButton")
-    ExecuteBtn.Size = UDim2.new(0, 75, 0, 30)
-    ExecuteBtn.Position = UDim2.new(1, -80, 0.5, -15)
+    ExecuteBtn.Size = UDim2.new(0, 65, 0, 28)
+    ExecuteBtn.Position = UDim2.new(1, -72, 0.5, -14)
     ExecuteBtn.BackgroundColor3 = Colors.Green
+    ExecuteBtn.BackgroundTransparency = 0.1
     ExecuteBtn.Text = "Execute"
     ExecuteBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
     ExecuteBtn.Font = Enum.Font.GothamBold
-    ExecuteBtn.TextSize = 12
+    ExecuteBtn.TextSize = 11
     ExecuteBtn.Parent = Row
     Corner(ExecuteBtn, 6)
     
     ExecuteBtn.MouseEnter:Connect(function()
-        Tween(ExecuteBtn, {BackgroundColor3 = Colors.GreenDark}, 0.2)
+        SmoothTween(ExecuteBtn, {BackgroundTransparency = 0, Size = UDim2.new(0, 67, 0, 30)}, 0.2)
     end)
     ExecuteBtn.MouseLeave:Connect(function()
-        Tween(ExecuteBtn, {BackgroundColor3 = Colors.Green}, 0.2)
+        SmoothTween(ExecuteBtn, {BackgroundTransparency = 0.1, Size = UDim2.new(0, 65, 0, 28)}, 0.2)
     end)
     
     ExecuteBtn.MouseButton1Down:Connect(function()
-        Tween(ExecuteBtn, {Size = UDim2.new(0, 73, 0, 28)}, 0.1)
+        SmoothTween(ExecuteBtn, {Size = UDim2.new(0, 62, 0, 26)}, 0.1)
     end)
     ExecuteBtn.MouseButton1Up:Connect(function()
-        Tween(ExecuteBtn, {Size = UDim2.new(0, 75, 0, 30)}, 0.1)
+        SmoothTween(ExecuteBtn, {Size = UDim2.new(0, 65, 0, 28)}, 0.1)
     end)
     
     ExecuteBtn.MouseButton1Click:Connect(function()
         if scriptData.Callback then
             scriptData.Callback()
         end
-        -- Status update
         UpdateStatus("Executed: " .. scriptData.Name)
     end)
     
@@ -518,185 +591,134 @@ for _, scriptData in pairs(Scripts) do
     CreateScriptRow(scriptData)
 end
 
--- Update canvas size
 ScriptsList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     ScriptsContainer.CanvasSize = UDim2.new(0, 0, 0, ScriptsList.AbsoluteContentSize.Y + 10)
 end)
 
---// RIGHT TOP CARDS
-local RightCard1 = CreateCard(MainContainer, {
-    Size = UDim2.new(0.32, -12, 0.25, -12),
-    Position = UDim2.new(0.64, 0, 0, 0),
-    Color = Colors.Card
+--// RIGHT CARDS
+local RightCard1 = CreateGlassCard(MainContainer, {
+    Size = UDim2.new(0.29, -10, 0.24, -10),
+    Position = UDim2.new(0.68, 5, 0, 5),
+    Delay = 0.25
 })
 
 local RightTitle1 = Create("TextLabel")
-RightTitle1.Size = UDim2.new(1, -30, 0, 25)
+RightTitle1.Size = UDim2.new(1, -30, 0, 20)
 RightTitle1.Position = UDim2.new(0, 15, 0, 10)
 RightTitle1.BackgroundTransparency = 1
-RightTitle1.Text = "Script Info"
+RightTitle1.Text = "SCRIPT INFO"
 RightTitle1.TextColor3 = Colors.SubText
 RightTitle1.Font = Enum.Font.GothamBold
-RightTitle1.TextSize = 12
+RightTitle1.TextSize = 10
 RightTitle1.TextXAlignment = Enum.TextXAlignment.Left
 RightTitle1.Parent = RightCard1
 
-local RightCard2 = CreateCard(MainContainer, {
-    Size = UDim2.new(0.32, -12, 0.25, -12),
-    Position = UDim2.new(0.64, 0, 0.25, 0),
-    Color = Colors.Card
+local RightCard2 = CreateGlassCard(MainContainer, {
+    Size = UDim2.new(0.29, -10, 0.24, -10),
+    Position = UDim2.new(0.68, 5, 0.25, 5),
+    Delay = 0.35
 })
 
 local RightTitle2 = Create("TextLabel")
-RightTitle2.Size = UDim2.new(1, -30, 0, 25)
+RightTitle2.Size = UDim2.new(1, -30, 0, 20)
 RightTitle2.Position = UDim2.new(0, 15, 0, 10)
 RightTitle2.BackgroundTransparency = 1
-RightTitle2.Text = "Player Info"
+RightTitle2.Text = "PLAYER INFO"
 RightTitle2.TextColor3 = Colors.SubText
 RightTitle2.Font = Enum.Font.GothamBold
-RightTitle2.TextSize = 12
+RightTitle2.TextSize = 10
 RightTitle2.TextXAlignment = Enum.TextXAlignment.Left
 RightTitle2.Parent = RightCard2
 
-local RightCard3 = CreateCard(MainContainer, {
-    Size = UDim2.new(0.32, -12, 0.25, -12),
-    Position = UDim2.new(0.64, 0, 0.5, 0),
-    Color = Colors.Card
+local RightCard3 = CreateGlassCard(MainContainer, {
+    Size = UDim2.new(0.29, -10, 0.24, -10),
+    Position = UDim2.new(0.68, 5, 0.5, 5),
+    Delay = 0.45
 })
 
 local RightTitle3 = Create("TextLabel")
-RightTitle3.Size = UDim2.new(1, -30, 0, 25)
+RightTitle3.Size = UDim2.new(1, -30, 0, 20)
 RightTitle3.Position = UDim2.new(0, 15, 0, 10)
 RightTitle3.BackgroundTransparency = 1
-RightTitle3.Text = "Server Info"
+RightTitle3.Text = "SERVER INFO"
 RightTitle3.TextColor3 = Colors.SubText
 RightTitle3.Font = Enum.Font.GothamBold
-RightTitle3.TextSize = 12
+RightTitle3.TextSize = 10
 RightTitle3.TextXAlignment = Enum.TextXAlignment.Left
 RightTitle3.Parent = RightCard3
 
---// CENTER MIDDLE CARD (Script Editor)
-local EditorCard = CreateCard(MainContainer, {
-    Size = UDim2.new(0.66, -12, 0.3, -12),
-    Position = UDim2.new(0.32, 0, 0.85, 0),
-    Color = Colors.Card
-})
-
-local EditorTitle = Create("TextLabel")
-EditorTitle.Size = UDim2.new(1, -30, 0, 25)
-EditorTitle.Position = UDim2.new(0, 15, 0, 10)
-EditorTitle.BackgroundTransparency = 1
-EditorTitle.Text = "Script Editor"
-EditorTitle.TextColor3 = Colors.SubText
-EditorTitle.Font = Enum.Font.GothamBold
-EditorTitle.TextSize = 12
-EditorTitle.TextXAlignment = Enum.TextXAlignment.Left
-EditorTitle.Parent = EditorCard
-
-local EditorBox = Create("TextBox")
-EditorBox.Size = UDim2.new(1, -30, 1, -70)
-EditorBox.Position = UDim2.new(0, 15, 0, 40)
-EditorBox.BackgroundColor3 = Colors.Card2
-EditorBox.Text = "-- Enter Lua code here\nprint('Hello, world!')"
-EditorBox.TextColor3 = Colors.Text
-EditorBox.Font = Enum.Font.Code
-EditorBox.TextSize = 12
-EditorBox.TextXAlignment = Enum.TextXAlignment.Left
-EditorBox.TextYAlignment = Enum.TextYAlignment.Top
-EditorBox.ClearTextOnFocus = false
-EditorBox.MultiLine = true
-EditorBox.Parent = EditorCard
-Corner(EditorBox, 6)
-Stroke(EditorBox, 1, Colors.Border, 0.7)
-
---// CENTER BOTTOM CARD (Console)
-local ConsoleCard = CreateCard(MainContainer, {
-    Size = UDim2.new(0.66, -12, 0.25, -12),
-    Position = UDim2.new(0.32, 0, 1.15, 0),
-    Color = Colors.Card
+--// CONSOLE CARD
+local ConsoleCard = CreateGlassCard(MainContainer, {
+    Size = UDim2.new(0.66, -10, 0.22, -10),
+    Position = UDim2.new(0.31, 5, 0.8, 5),
+    Delay = 0.5
 })
 
 local ConsoleTitle = Create("TextLabel")
-ConsoleTitle.Size = UDim2.new(1, -30, 0, 25)
-ConsoleTitle.Position = UDim2.new(0, 15, 0, 10)
+ConsoleTitle.Size = UDim2.new(1, -30, 0, 20)
+ConsoleTitle.Position = UDim2.new(0, 15, 0, 8)
 ConsoleTitle.BackgroundTransparency = 1
-ConsoleTitle.Text = "Console"
+ConsoleTitle.Text = "CONSOLE"
 ConsoleTitle.TextColor3 = Colors.SubText
 ConsoleTitle.Font = Enum.Font.GothamBold
-ConsoleTitle.TextSize = 12
+ConsoleTitle.TextSize = 10
 ConsoleTitle.TextXAlignment = Enum.TextXAlignment.Left
 ConsoleTitle.Parent = ConsoleCard
 
 local ConsoleOutput = Create("ScrollingFrame")
-ConsoleOutput.Size = UDim2.new(1, -30, 1, -70)
-ConsoleOutput.Position = UDim2.new(0, 15, 0, 40)
+ConsoleOutput.Size = UDim2.new(1, -30, 1, -35)
+ConsoleOutput.Position = UDim2.new(0, 15, 0, 30)
 ConsoleOutput.BackgroundColor3 = Colors.Card2
-ConsoleOutput.ScrollBarThickness = 3
+ConsoleOutput.BackgroundTransparency = 0.3
+ConsoleOutput.ScrollBarThickness = 2
 ConsoleOutput.Parent = ConsoleCard
 Corner(ConsoleOutput, 6)
-Stroke(ConsoleOutput, 1, Colors.Border, 0.7)
 
 local ConsoleList = Create("UIListLayout")
-ConsoleList.Padding = UDim.new(0, 4)
+ConsoleList.Padding = UDim.new(0, 3)
 ConsoleList.Parent = ConsoleOutput
 
 -- Status function
 local function UpdateStatus(message)
     local StatusLabel = Create("TextLabel")
-    StatusLabel.Size = UDim2.new(1, -10, 0, 20)
+    StatusLabel.Size = UDim2.new(1, -10, 0, 18)
     StatusLabel.BackgroundTransparency = 1
     StatusLabel.Text = "[" .. os.date("%H:%M:%S") .. "] " .. message
     StatusLabel.TextColor3 = Colors.SubText
     StatusLabel.Font = Enum.Font.GothamMedium
-    StatusLabel.TextSize = 11
+    StatusLabel.TextSize = 10
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
     StatusLabel.Parent = ConsoleOutput
     
-    ConsoleOutput.CanvasSize = UDim2.new(0, 0, 0, ConsoleList.AbsoluteContentSize.Y + 10)
+    ConsoleOutput.CanvasSize = UDim2.new(0, 0, 0, ConsoleList.AbsoluteContentSize.Y + 5)
     ConsoleOutput.CanvasPosition = Vector2.new(0, ConsoleOutput.CanvasSize.Y.Offset)
 end
 
---// RIGHT BOTTOM CARD
-local RightBottomCard = CreateCard(MainContainer, {
-    Size = UDim2.new(0.32, -12, 0.3, -12),
-    Position = UDim2.new(0.64, 0, 0.85, 0),
-    Color = Colors.Card
-})
-
-local RightBottomTitle = Create("TextLabel")
-RightBottomTitle.Size = UDim2.new(1, -30, 0, 25)
-RightBottomTitle.Position = UDim2.new(0, 15, 0, 10)
-RightBottomTitle.BackgroundTransparency = 1
-RightBottomTitle.Text = "Information"
-RightBottomTitle.TextColor3 = Colors.SubText
-RightBottomTitle.Font = Enum.Font.GothamBold
-RightBottomTitle.TextSize = 12
-RightBottomTitle.TextXAlignment = Enum.TextXAlignment.Left
-RightBottomTitle.Parent = RightBottomCard
-
---// BOTTOM NAVIGATION BAR
+--// BOTTOM NAVIGATION
 local NavBar = Create("Frame")
-NavBar.Size = UDim2.new(0, 400, 0, 55)
-NavBar.Position = UDim2.new(0.5, -200, 1, -70)
+NavBar.Size = UDim2.new(0, 380, 0, 50)
+NavBar.Position = UDim2.new(0.5, -190, 1, -65)
 NavBar.BackgroundColor3 = Colors.NavBg
+NavBar.BackgroundTransparency = Colors.NavTransparency
 NavBar.BorderSizePixel = 0
 NavBar.Parent = Background
-Corner(NavBar, 27)
-Stroke(NavBar, 1, Colors.Border, 0.5)
+Corner(NavBar, 25)
+GlassStroke(NavBar, 1, 0.7)
+GlassGradient(NavBar)
+Shadow(NavBar, 0.7, 20)
 
 local NavLayout = Create("UIListLayout")
 NavLayout.FillDirection = Enum.FillDirection.Horizontal
 NavLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 NavLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-NavLayout.Padding = UDim.new(0, 10)
+NavLayout.Padding = UDim.new(0, 8)
 NavLayout.Parent = NavBar
 
 local NavPadding = Create("UIPadding")
-NavPadding.PaddingLeft = UDim.new(0, 10)
-NavPadding.PaddingRight = UDim.new(0, 10)
+NavPadding.PaddingLeft = UDim.new(0, 8)
+NavPadding.PaddingRight = UDim.new(0, 8)
 NavPadding.Parent = NavBar
 
--- Nav buttons
 local NavIcons = {
     {Name = "Home", Icon = "⌂"},
     {Name = "Library", Icon = "📚"},
@@ -712,68 +734,87 @@ for i, navData in pairs(NavIcons) do
     local NavBtn = Create("TextButton")
     NavBtn.Size = UDim2.new(0, 40, 0, 40)
     NavBtn.BackgroundColor3 = Colors.Card2
+    NavBtn.BackgroundTransparency = 0.3
     NavBtn.Text = navData.Icon
     NavBtn.TextColor3 = Colors.SubText
     NavBtn.Font = Enum.Font.GothamBold
-    NavBtn.TextSize = 18
+    NavBtn.TextSize = 16
     NavBtn.Parent = NavBar
     Corner(NavBtn, 20)
     
     NavBtn.MouseEnter:Connect(function()
-        Tween(NavBtn, {BackgroundColor3 = Colors.Card3, TextColor3 = Colors.Text}, 0.2)
+        SmoothTween(NavBtn, {
+            BackgroundTransparency = 0,
+            TextColor3 = Colors.Text,
+            Size = UDim2.new(0, 44, 0, 44)
+        }, 0.2)
     end)
     
     NavBtn.MouseLeave:Connect(function()
         if SelectedNav ~= NavBtn then
-            Tween(NavBtn, {BackgroundColor3 = Colors.Card2, TextColor3 = Colors.SubText}, 0.2)
+            SmoothTween(NavBtn, {
+                BackgroundTransparency = 0.3,
+                TextColor3 = Colors.SubText,
+                Size = UDim2.new(0, 40, 0, 40)
+            }, 0.2)
         end
     end)
     
     NavBtn.MouseButton1Click:Connect(function()
         if SelectedNav then
-            Tween(SelectedNav, {BackgroundColor3 = Colors.Card2, TextColor3 = Colors.SubText}, 0.2)
+            SmoothTween(SelectedNav, {
+                BackgroundTransparency = 0.3,
+                TextColor3 = Colors.SubText,
+                BackgroundColor3 = Colors.Card2
+            }, 0.2)
         end
         SelectedNav = NavBtn
-        Tween(NavBtn, {BackgroundColor3 = Colors.Accent, TextColor3 = Colors.Text}, 0.2)
+        SmoothTween(NavBtn, {
+            BackgroundTransparency = 0,
+            TextColor3 = Colors.Text,
+            BackgroundColor3 = Colors.Accent
+        }, 0.3)
         UpdateStatus("Switched to " .. navData.Name)
     end)
 end
 
 --// TIME WIDGET
 local TimeWidget = Create("Frame")
-TimeWidget.Size = UDim2.new(0, 100, 0, 40)
-TimeWidget.Position = UDim2.new(1, -120, 1, -60)
+TimeWidget.Size = UDim2.new(0, 90, 0, 35)
+TimeWidget.Position = UDim2.new(1, -110, 1, -55)
 TimeWidget.BackgroundColor3 = Colors.NavBg
+TimeWidget.BackgroundTransparency = Colors.NavTransparency
 TimeWidget.BorderSizePixel = 0
 TimeWidget.Parent = Background
-Corner(TimeWidget, 20)
-Stroke(TimeWidget, 1, Colors.Border, 0.5)
+Corner(TimeWidget, 17)
+GlassStroke(TimeWidget, 1, 0.7)
 
 local TimeLabel = Create("TextLabel")
-TimeLabel.Size = UDim2.new(0, 60, 1, 0)
+TimeLabel.Size = UDim2.new(0, 55, 1, 0)
 TimeLabel.Position = UDim2.new(0, 5, 0, 0)
 TimeLabel.BackgroundTransparency = 1
 TimeLabel.Text = "9:41"
 TimeLabel.TextColor3 = Colors.Text
 TimeLabel.Font = Enum.Font.GothamBold
-TimeLabel.TextSize = 14
+TimeLabel.TextSize = 13
 TimeLabel.Parent = TimeWidget
 
 local MuteBtn = Create("TextButton")
-MuteBtn.Size = UDim2.new(0, 25, 0, 25)
-MuteBtn.Position = UDim2.new(0, 70, 0.5, -12)
+MuteBtn.Size = UDim2.new(0, 22, 0, 22)
+MuteBtn.Position = UDim2.new(0, 62, 0.5, -11)
 MuteBtn.BackgroundColor3 = Colors.Card2
+MuteBtn.BackgroundTransparency = 0.3
 MuteBtn.Text = "🔇"
 MuteBtn.TextColor3 = Colors.SubText
 MuteBtn.Font = Enum.Font.GothamBold
-MuteBtn.TextSize = 12
+MuteBtn.TextSize = 10
 MuteBtn.Parent = TimeWidget
-Corner(MuteBtn, 12)
+Corner(MuteBtn, 11)
 
 MuteBtn.MouseButton1Click:Connect(function()
     local muted = MuteBtn.Text == "🔇"
     MuteBtn.Text = muted and "🔊" or "🔇"
-    MuteBtn.TextColor3 = muted and Colors.Text or Colors.SubText
+    SmoothTween(MuteBtn, {TextColor3 = muted and Colors.Text or Colors.SubText}, 0.2)
 end)
 
 --// CLOCK UPDATE
@@ -789,19 +830,4 @@ task.spawn(UpdateClock)
 UpdateStatus("UI loaded successfully")
 UpdateStatus("Welcome, " .. LocalPlayer.Name)
 
---// MAKE UI RESPONSIVE
-local function UpdateResponsive()
-    local screenWidth = workspace.CurrentCamera.ViewportSize.X
-    if screenWidth < 1200 then
-        UIScale.Scale = 0.8
-    elseif screenWidth < 800 then
-        UIScale.Scale = 0.6
-    else
-        UIScale.Scale = 1
-    end
-end
-
-workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(UpdateResponsive)
-UpdateResponsive()
-
-print("Nebula Hub UI loaded successfully")
+print("Xenshit Hub - Glassmorphism UI loaded")
